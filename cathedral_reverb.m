@@ -22,7 +22,6 @@ reverb_signal = cathedral_reverb(signal, impulse_response);
 %
 wavwrite(reverb_signal, fs, nbits, 'marvin_in_cathedral.wav');
 
-
 out_L = length(signal) + length(impulse_response)-1;  % Creating length of output signal
 
 out_L2 = pow2(nextpow2(out_L)); % Length to power 2 for moving to frequency domain. 
