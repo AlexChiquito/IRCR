@@ -1,8 +1,7 @@
-
+function result=effect_overdrive(x)
 % y=symclip(x)
 % "Overdrive" simulation with symmetrical clipping
 % x - input
-x=reco;
 N=length(x);
 yo=zeros(1,N); % Preallocate y
 th=1/3; % threshold for symmetrical soft clipping
@@ -18,3 +17,4 @@ if x(i)> 0, yo(i)=1;end;
 if x(i)< 0, yo(i)=-1;end;
 end;
 end;
+result=yo;

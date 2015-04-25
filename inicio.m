@@ -8,8 +8,11 @@ audio2=lib_audio('Nice Drum Room'); % From file
 % audio=effect_tremolo(audio);
 % audio=effect_rinng(audio);
 % audio=effect_distortion(audio);
+% audio=effect_wahwah(audio);
+% audio=effect_overdrive(audio);
 
 % TODO audio=effect_cathedral_reverb(audio, audio2);
-audio=effect_wahwah(audio);
+% TODO Graphs
+% TODO guide
 
 wavplay(audio, fs);
