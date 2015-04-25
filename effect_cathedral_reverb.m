@@ -1,4 +1,4 @@
-function reverb_signal = cathedral_reverb(signal, impulse_response)
+function reverb_signal = effect_cathedral_reverb(signal, impulse_response)
 % 
 % cathedral_reverb.m
 %

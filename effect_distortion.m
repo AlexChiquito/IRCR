@@ -1,4 +1,4 @@
-x=reco;
+function resultado=effect_distortion(x)
 gain = 20; % Spinal Tap it
 mix = 1; % Hear only fuzz
 % y=fuzzexp(x, gain, mix)
@@ -9,4 +9,4 @@ mix = 1; % Hear only fuzz
 q=x*gain/max(abs(x));
 z=sign(-q).*(1-exp(sign(-q).*q));
 yd=mix*z*max(abs(x))/max(abs(z))+(1-mix)*x;
-yd=yd*max(abs(x))/max(abs(yd));
+resultado=yd*max(abs(x))/max(abs(yd));

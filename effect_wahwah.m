@@ -1,5 +1,5 @@
-function yb=wahwah(x)
-Fs = 8000;
+function result=effect_wahwah(x)
+global fs
 % damping factor
 % lower the damping factor the smaller the pass band
 damp = 0.05;
@@ -9,7 +9,7 @@ maxf=3000;
 % wah frequency, how many Hz per second are cycled through
 Fw = 2000;
 % change in centre frequency per sample (Hz)
-delta = Fw/Fs;
+delta = Fw/fs;
 % create triangle wave of centre frequency values
 Fc=minf:delta:maxf;
 N = 8;
@@ -22,7 +22,7 @@ end
 Fc = Fc(1:length(x));
 % difference equation coefficients
 % must be recalculated each time Fc changes
-F1 = 2*sin((pi*Fc(1))/Fs);
+F1 = 2*sin((pi*Fc(1))/fs);
 % this dictates size of the pass bands
 Q1 = 2*damp;
 yh=zeros(size(x)); % create emptly out vectors
@@ -37,8 +37,8 @@ for n=2:length(x),
     yh(n) = x(n) - yl(n-1) - Q1*yb(n-1);
     yb(n) = F1*yh(n) + yb(n-1);
     yl(n) = F1*yb(n) + yl(n-1);
-    F1 = 2*sin((pi*Fc(n))/Fs);
+    F1 = 2*sin((pi*Fc(n))/fs);
 end
 %normalise
 maxyb = max(abs(yb));
-yb = yb/maxyb;
+result = yb/maxyb;
