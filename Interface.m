@@ -86,28 +86,32 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-axes(handles.axes1);
-cla;
 
+handles
 global audio fs
 audio=lib_audio();
+axes(handles.axes2);
+plot(audio)
+axes(handles.axes1);
+
 popup_sel_index = get(handles.popupmenu1, 'Value');
 switch popup_sel_index
     case 1
-        audio=effect_tremolo(audio);
+        result=effect_tremolo(audio);
     case 2
-        audio=effect_rinng(audio);
+        result=effect_rinng(audio);
     case 3
-        audio=effect_distortion(audio);
+        result=effect_distortion(audio);
     case 4
-        audio=effect_wahwah(audio);
+        result=effect_wahwah(audio);
     case 5
-        audio=effect_overdrive(audio);
+        result=effect_overdrive(audio);
     case 6
-        audio=effect_cathedral_reverb(audio, audio2);
+        audio2=lib_audio('Nice Drum Room');
+        result=effect_cathedral_reverb(audio, audio2);
 end
-plot(audio);
-wavplay(audio, fs);
+plot(result)
+% wavplay(audio, fs);
 
 
 % --------------------------------------------------------------------
@@ -151,6 +155,8 @@ delete(handles.figure1)
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
+
+
 % hObject    handle to popupmenu1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
