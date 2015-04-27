@@ -94,21 +94,24 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 disp('Init')
 % live = audiorecorder(44100, 16, 1);
 
-axes(handles.axes1);
+
 
 input = dsp.AudioRecorder;
 output = dsp.AudioPlayer;
 
 tic;
 
-while (toc < 5)
+while (toc < 10)
     stream = step(input);
-    
+    axes(handles.axes1);
+    plot(stream);
+    axes(handles.axes2);
     result=effect_wahwah(stream);
+    plot(result);
     
     step(output, result);
     
-    plot(stream);
+    
     drawnow;
 end
 disp('end')
