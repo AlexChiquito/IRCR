@@ -1,7 +1,8 @@
 function varargout = Interface(varargin)
-global fs n audio;
+global fs n audio nn;
 fs=44100;
-n=4;
+n=0.05;
+nn=100;
 audio = [];
 % INTERFACE MATLAB code for Interface.fig
 %      INTERFACE, by itself, creates a new INTERFACE or raises the existing
@@ -81,36 +82,116 @@ function varargout = Interface_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+
+
+
+
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+disp('Init')
+% live = audiorecorder(44100, 16, 1);
 
-handles
-global audio fs
-audio=lib_audio();
-axes(handles.axes2);
-plot(audio)
 axes(handles.axes1);
 
-popup_sel_index = get(handles.popupmenu1, 'Value');
-switch popup_sel_index
-    case 1
-        result=effect_tremolo(audio);
-    case 2
-        result=effect_rinng(audio);
-    case 3
-        result=effect_distortion(audio);
-    case 4
-        result=effect_wahwah(audio);
-    case 5
-        result=effect_overdrive(audio);
-    case 6
-        audio2=lib_audio('Nice Drum Room');
-        result=effect_cathedral_reverb(audio, audio2);
+input = dsp.AudioRecorder;
+output = dsp.AudioPlayer;
+
+tic;
+
+while (toc < 5)
+    stream = step(input);
+    
+    result=effect_wahwah(stream);
+    
+    step(output, result);
+    
+    plot(stream);
+    drawnow;
 end
-plot(result)
+disp('end')
+
+% AR = dsp.AudioRecorder('OutputNumOverrunSamples',true, 'SampleRate', 44100, 'SamplesPerFrame', 1024);
+% AP = dsp.AudioPlayer('SampleRate',44100, 'QueueDuration',1, 'OutputNumUnderrunSamples', true);
+%         
+% disp('Speak into microphone now');
+% tic;
+% toc=0;
+% while toc < 100,
+%   audioIn = step(AR);
+%   step(AP,audioIn);
+%   toc = toc + 1;
+% end
+% release(AR);
+% release(AP);
+% disp('Recording complete'); 
+
+% set(live, 'TimerPeriod', 0.05);
+% set(live, 'StartFcn', @start);
+% set(live, 'TimerFcn',@analyze);
+% set(live, 'StopFcn', @stop)
+% record(live)
+% for v = 0:1:10
+%     recordblocking(live, 1);
+%     data=getaudiodata(live);
+%     plot(data)
+%     sound(data, 44100, 16);
+% end
+
+%recordblocking(live, 5);
+
+function stop(one, two)
+disp('End')
+
+function analyze(one, two)
+audio = getaudiodata(one);
+play(one)
+plot(audio)
+disp('Hola')
+
+function start(one, two)
+disp('Inicio')
+
+
+% global audio fs nn
+% index=get(handles.popupmenu1, 'Value');
+% result = [];
+% while nn > 1
+%     
+%     player = audioplayer(result, fs);
+% 
+%   clear audio result;
+%   audio=lib_audio();
+% axes(handles.axes2);
+% plot(audio)
+% axes(handles.axes1);
+% 
+% switch index
+%     case 1
+%         result=effect_tremolo(audio);
+%     case 2
+%         result=effect_rinng(audio);
+%     case 3
+%         result=effect_distortion(audio);
+%     case 4
+%         result=effect_wahwah(audio);
+%     case 5
+%         result=effect_overdrive(audio);
+%     case 6
+%         audio2=lib_audio('Nice Drum Room');
+%         result=effect_cathedral_reverb(audio, audio2);
+% end
+% plot(result)
+% 
+% 
+%     
+%     
+%     nn=nn-1;
+% end
+
+
 % wavplay(audio, fs);
 
 
