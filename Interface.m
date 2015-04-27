@@ -104,7 +104,13 @@ tic;
 while (toc < 10)
     stream = step(input);
     axes(handles.axes1);
-    plot(stream);
+    
+    
+    out_L = length(stream) -1; % + length(stream)-1;
+out_L2 = pow2(nextpow2(out_L))
+    ff=real(ifft(stream, out_L2));
+
+    plot(ff);
     axes(handles.axes2);
     result=effect_wahwah(stream);
     plot(result);
@@ -112,7 +118,7 @@ while (toc < 10)
     step(output, result);
     
     
-    drawnow;
+    % drawnow;
 end
 disp('end')
 
