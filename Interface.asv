@@ -113,20 +113,14 @@ end
 
 
 output = dsp.AudioPlayer('SampleRate', 8000);
-% axes(handles.axes1);
+axes(handles.axes1);
 %     aentrada=axes(handles.axes1);
 %     asalida=axes(handles.axes2);
-    aentrada=subplot(1,2,1);
+        aentrada=subplot(1,2,1);
     asalida=subplot(1,2,2);
 tic;
-if (index == 4 || index==6)
-    switch index
-        case 4 
-            result=effect_wahwah(handles.audioraw);
-        case 6
-                     audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(handles.audioraw, audio2);
-    end
+if (index == 4)
+    result=effect_wahwah(handles.audioraw);
     sound(result)
     plot(aentrada,handles.audioraw);
     plot(asalida,result); 
@@ -150,8 +144,6 @@ else
      case 6
          %audio2=lib_audio('Nice Drum Room');
          result=effect_cathedral_reverb(audio, audio2);
-     case 7
-         result=effect_vibrato(audio);
  end
  
     plot(aentrada,audio);
@@ -336,7 +328,7 @@ function parart_Callback(hObject, eventdata, handles)
 stop(handles.grabarinternotarjeta);
 %handles.audio= dsp.SignalSource(getaudiodata(handles.grabarinternotarjeta), 1024);
 handles.audioraw= getaudiodata(handles.grabarinternotarjeta);
-handles.audio= dsp.SignalSource(getaudiodata(handles.grabarinternotarjeta), 1024);
+
 guidata(hObject,handles);
 set(handles.parart, 'Enable', 'off');
 set(handles.limpiar, 'Enable', 'on');
