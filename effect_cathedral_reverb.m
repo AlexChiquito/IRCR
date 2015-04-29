@@ -1,5 +1,5 @@
 function yrv = effect_cathedral_reverb(signal)
-respuesta_al_impulso=lib_audio('Nice Drum Room');
+respuesta_al_impulso=wavread('Nice Drum Room');
 %tamaño de las FFT
 out_L = length(signal) + length(respuesta_al_impulso)-1;
 out_L2 = pow2(nextpow2(out_L)); %para mejoramiento del algoritmo de FFT

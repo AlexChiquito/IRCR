@@ -1,5 +1,6 @@
 function yv=effect_vibrato(x)
 % Vibrato 
+global fs;
 frecmod=10;
 ancho=0.0008;
 ya_alt=0;

@@ -85,7 +85,9 @@ varargout{1} = handles.output;
 handles.audio2=[];
 handles.audio=[];
 handles.audioraw=[];
+handles.audioraw2=[];
 handles.grabarinterno = audiorecorder(8000,16,1);
+handles.grabarinternotarjeta2 = audiorecorder(8000,16,2,2);
 handles.grabarinternotarjeta = audiorecorder(8000,16,1,2);
 guidata(hObject,handles)
 
@@ -124,14 +126,14 @@ if (index == 4 || index==6)
         case 4 
             result=effect_wahwah(handles.audioraw);
         case 6
-                     audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(handles.audioraw, audio2);
+                     %audio2=wavread('Nice Drum Room');
+         result=effect_cathedral_reverb(handles.audioraw2);
     end
     sound(result)
     plot(aentrada,handles.audioraw);
     plot(asalida,result); 
 else
- while (live && toc < 5) || ( ~live && ~isDone(input))
+ while (live && toc < 15) || ( ~live && ~isDone(input))
     audio = step(input);
  switch index
      case 1
@@ -259,7 +261,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
      set(hObject,'BackgroundColor','white');
 end
 
-set(hObject, 'String', {'effect_tremolo', 'effect_rinng', 'effect_distortion', 'effect_wahwah', 'effect_overdrive', 'effect_cathedral_reverb'});
+set(hObject, 'String', {'effect_tremolo', 'effect_rinng', 'effect_distortion', 'effect_wahwah', 'effect_overdrive', 'effect_cathedral_reverb', 'effect_vibrato'});
 
 
 % --- Executes on button press in pushbutton4.
@@ -325,6 +327,7 @@ function grabart_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 record(handles.grabarinternotarjeta);
+record(handles.grabarinternotarjeta2);
 set(handles.parart, 'Enable', 'on');
 
 
@@ -334,8 +337,10 @@ function parart_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 stop(handles.grabarinternotarjeta);
+stop(handles.grabarinternotarjeta2);
 %handles.audio= dsp.SignalSource(getaudiodata(handles.grabarinternotarjeta), 1024);
 handles.audioraw= getaudiodata(handles.grabarinternotarjeta);
+handles.audioraw2=getaudiodata(handles.grabarinternotarjeta2);
 handles.audio= dsp.SignalSource(getaudiodata(handles.grabarinternotarjeta), 1024);
 guidata(hObject,handles);
 set(handles.parart, 'Enable', 'off');
