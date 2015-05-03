@@ -1,9 +1,9 @@
 function varargout = Interface(varargin)
 global fs n audio nn;
-fs=44100;
+fs=8000;
 n=0.05;
 nn=100;
-audio = [];
+
 % INTERFACE MATLAB code for Interface.fig
 %      INTERFACE, by itself, creates a new INTERFACE or raises the existing
 %      singleton*.
@@ -27,7 +27,7 @@ audio = [];
 
 % Edit the above text to modify the response to help Interface
 
-% Last Modified by GUIDE v2.5 29-Apr-2015 13:41:59
+% Last Modified by GUIDE v2.5 01-May-2015 08:37:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -80,15 +80,15 @@ function varargout = Interface_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-
+global fs;
 varargout{1} = handles.output;
 handles.audio2=[];
 handles.audio=[];
 handles.audioraw=[];
 handles.audioraw2=[];
-handles.grabarinterno = audiorecorder(8000,16,1);
-handles.grabarinternotarjeta2 = audiorecorder(8000,16,2,2);
-handles.grabarinternotarjeta = audiorecorder(8000,16,1,2);
+handles.grabarinterno = audiorecorder(fs,16,1);
+% handles.grabarinternotarjeta2 = audiorecorder(fs,16,2,2);
+% handles.grabarinternotarjeta = audiorecorder(fs,16,1,2);
 guidata(hObject,handles)
 
 
@@ -102,11 +102,11 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % live = audiorecorder(44100, 16, 1);
-
+global fs;
 index=get(handles.popupmenu1, 'Value');
 live=false;
 if isempty(handles.audio)
-   input = dsp.AudioRecorder('NumChannels', 1, 'SampleRate', 8000);
+   input = dsp.AudioRecorder('NumChannels', 1, 'SampleRate', fs, 'SamplesPerFrame', fs);
     live=true;
    disp('Audio recorder');
 else
@@ -114,27 +114,31 @@ else
 end
 
 
-output = dsp.AudioPlayer('SampleRate', 8000);
+output = dsp.AudioPlayer('SampleRate', fs);
 % axes(handles.axes1);
 %     aentrada=axes(handles.axes1);
 %     asalida=axes(handles.axes2);
     aentrada=subplot(1,2,1);
     asalida=subplot(1,2,2);
-tic;
-if (index == 4 || index==6)
-    switch index
-        case 4 
-            result=effect_wahwah(handles.audioraw);
-        case 6
-                     %audio2=wavread('Nice Drum Room');
-         result=effect_cathedral_reverb(handles.audioraw2);
-    end
-    sound(result)
-    plot(aentrada,handles.audioraw);
-    plot(asalida,result); 
-else
- while (live && toc < 15) || ( ~live && ~isDone(input))
-    audio = step(input);
+    tic;
+% if (index == 4 || index==6)
+%     switch index
+%         case 4 
+%             result=effect_wahwah(handles.audioraw);
+%         case 6
+%                      %audio2=wavread('Nice Drum Room');
+%          result=effect_cathedral_reverb(handles.audioraw2);
+%     end
+%     sound(result)
+%     plot(aentrada,handles.audioraw);
+%     plot(asalida,result); 
+% else
+ciclo = 1;
+% size=8000;
+ while (live && toc < 5) || ( ~live && ~isDone(input))
+     data=[floor(toc/ciclo), mod(toc, ciclo)];
+     % disp(data);
+     audio = step(input);
  switch index
      case 1
          result=effect_tremolo(audio);
@@ -143,7 +147,7 @@ else
      case 3
          result=effect_distortion(audio);
      case 4
-         result=effect_wahwah(handles.audioraw);
+         result=effect_wahwah(audio, data);
         % sound(result)
          %plot(aentrada,handles.audioraw);
          %plot(asalida,result); 
@@ -160,8 +164,10 @@ else
     plot(asalida,result);    
     drawnow;
      step(output, result);
-end    
-end 
+ end
+ release(output);
+ release(input);
+% end 
     % drawnow;
 % AR = dsp.AudioRecorder('OutputNumOverrunSamples',true, 'SampleRate', 44100, 'SamplesPerFrame', 1024);
 % AP = dsp.AudioPlayer('SampleRate',44100, 'QueueDuration',1, 'OutputNumUnderrunSamples', true);
@@ -227,6 +233,7 @@ function CloseMenuItem_Callback(hObject, eventdata, handles)
 % hObject    handle to CloseMenuItem (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
                      ['Close ' get(handles.figure1,'Name') '...'],...
                      'Yes','No','Yes');
@@ -345,3 +352,14 @@ handles.audio= dsp.SignalSource(getaudiodata(handles.grabarinternotarjeta), 1024
 guidata(hObject,handles);
 set(handles.parart, 'Enable', 'off');
 set(handles.limpiar, 'Enable', 'on');
+
+
+% --- Executes during object deletion, before destroying properties.
+function figure1_DeleteFcn(hObject, eventdata, handles)
+disp('Bye');
+
+
+% guidata(hObject,handles);
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

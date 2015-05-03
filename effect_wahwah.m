@@ -1,5 +1,6 @@
-function result=effect_wahwah(x)
+function result=effect_wahwah(x, data)
 global fs
+length(x)
 % factor de amortiguamiento
 % entre mas bajo el factor, mas pequeño el pasa bandas
 damp = 0.05;
@@ -7,7 +8,7 @@ damp = 0.05;
 minf=500;
 maxf=3000;
 % Frecuencia del wahwah
-Fw = 2000;
+Fw = fs;
 % Lo que se movera el centro del pasa bandas en un sample
 delta = Fw/fs;
 % funcion triangular en el centro de las frecuencias max y min
