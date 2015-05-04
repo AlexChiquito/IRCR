@@ -1,6 +1,5 @@
-function result=effect_wahwah(x, data)
+function result=effect_wahwah(x)
 global fs
-length(x)
 % factor de amortiguamiento
 % entre mas bajo el factor, mas pequeño el pasa bandas
 damp = 0.05;

@@ -105,18 +105,24 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 global fs;
 index=get(handles.popupmenu1, 'Value');
 live=false;
+cha=1;
+fsi=fs;
 if isempty(handles.audio)
-   input = dsp.AudioRecorder('NumChannels', 1,'OutputNumOverrunSamples',true);
-   input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
+    if (index==6)
+        cha=2;
+        fsi=fs/2;
+    end
+   input = dsp.AudioRecorder('OutputNumUnderrunSamples', true,'NumChannels', cha,'QueueDuration',0.5, 'SamplesPerFrame', fsi, 'SampleRate', fs);
+   %input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
    live=true;
    disp('Audio recorder');
 else
    input = handles.audio;
-   input2=handles.audio2;
+   % input2=handles.audio2;
 end
 
 
-output = dsp.AudioPlayer('SampleRate', fs);
+output = dsp.AudioPlayer('SampleRate', fs, 'QueueDuration', 0.5);
 %handles.axes1=gca;
 %handles.axes2=gca;
 % axes(handles.axes1);
@@ -140,13 +146,11 @@ output = dsp.AudioPlayer('SampleRate', fs);
 ciclo = 1;
 % size=8000;
  while (live && toc < 15) || ( ~live && ~isDone(input))
-     data=[floor(toc/ciclo), mod(toc, ciclo)];
+     %data=[floor(toc/ciclo), mod(toc, ciclo)];
      % disp(data);
-     if (index==6)
-        audio2 = step(input2);
-     else
+     disp('One');
         audio = step(input);
-     end
+
  switch index
      case 1
          result=effect_tremolo(audio);
@@ -155,7 +159,7 @@ ciclo = 1;
      case 3
          result=effect_distortion(audio);
      case 4
-         result=effect_wahwah(audio, data);
+         result=effect_wahwah(audio);
         % sound(result)
          %plot(aentrada,handles.audioraw);
          %plot(asalida,result); 
@@ -163,15 +167,13 @@ ciclo = 1;
          result=effect_overdrive(audio);
      case 6
          %audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(audio2,handles.respuesta);
+         result=effect_cathedral_reverb(audio,handles.respuesta);
      case 7
          result=effect_vibrato(audio);
  end
-     if (index==6)
-        plot(handles.axes1,audio2);
-     else
+
         plot(handles.axes1,audio);
-     end
+
    
     plot(handles.axes2,result);    
     drawnow;
