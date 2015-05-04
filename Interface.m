@@ -106,20 +106,24 @@ global fs;
 index=get(handles.popupmenu1, 'Value');
 live=false;
 if isempty(handles.audio)
-   input = dsp.AudioRecorder('NumChannels', 1, 'SampleRate', fs, 'SamplesPerFrame', fs);
-    live=true;
+   input = dsp.AudioRecorder('NumChannels', 1,'OutputNumOverrunSamples',true);
+   input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
+   live=true;
    disp('Audio recorder');
 else
    input = handles.audio;
+   input2=handles.audio2;
 end
 
 
 output = dsp.AudioPlayer('SampleRate', fs);
+%handles.axes1=gca;
+%handles.axes2=gca;
 % axes(handles.axes1);
 %     aentrada=axes(handles.axes1);
 %     asalida=axes(handles.axes2);
-    aentrada=subplot(1,2,1);
-    asalida=subplot(1,2,2);
+%    aentrada=subplot(1,2,1);
+%    asalida=subplot(1,2,2);
     tic;
 % if (index == 4 || index==6)
 %     switch index
@@ -135,10 +139,14 @@ output = dsp.AudioPlayer('SampleRate', fs);
 % else
 ciclo = 1;
 % size=8000;
- while (live && toc < 5) || ( ~live && ~isDone(input))
+ while (live && toc < 15) || ( ~live && ~isDone(input))
      data=[floor(toc/ciclo), mod(toc, ciclo)];
      % disp(data);
-     audio = step(input);
+     if (index==6)
+        audio2 = step(input2);
+     else
+        audio = step(input);
+     end
  switch index
      case 1
          result=effect_tremolo(audio);
@@ -155,13 +163,17 @@ ciclo = 1;
          result=effect_overdrive(audio);
      case 6
          %audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(audio, audio2);
+         result=effect_cathedral_reverb(audio2,handles.respuesta);
      case 7
          result=effect_vibrato(audio);
  end
- 
-    plot(aentrada,audio);
-    plot(asalida,result);    
+     if (index==6)
+        plot(handles.axes1,audio2);
+     else
+        plot(handles.axes1,audio);
+     end
+   
+    plot(handles.axes2,result);    
     drawnow;
      step(output, result);
  end
@@ -281,8 +293,8 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 
 set(handles.nombreaudio, 'String', nombre);
 set(handles.limpiar, 'Enable', 'on');
-handles.audio=dsp.AudioFileReader(strcat(ruta,nombre));
-% handles.audio2=lib_audio(strcat(ruta,nombre));
+%handles.audio=dsp.AudioFileReader(strcat(ruta,nombre));
+handles.respuesta=strcat(ruta,nombre);
 guidata(hObject,handles);
 
 
