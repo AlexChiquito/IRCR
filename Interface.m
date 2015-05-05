@@ -1,6 +1,6 @@
 function varargout = Interface(varargin)
 global fs n audio nn;
-fs=8000;
+fs=10000;
 n=0.05;
 nn=100;
 
@@ -111,49 +111,27 @@ fsi=fs;
 if isempty(handles.audio)
     if (index==6)
         cha=2;
-        fsi=2*fs;
+        % fsi=2*fs;
     end
-   input = dsp.AudioRecorder('OutputNumUnderrunSamples', 'true','NumChannels', cha,'QueueDuration',0.5, 'SamplesPerFrame', fsi, 'SampleRate', fs);
+    % 'OutputNumUnderrunSamples', true,
+   input = dsp.AudioRecorder('NumChannels', cha,'QueueDuration', 1, 'SamplesPerFrame', fsi, 'SampleRate', fs);
    %input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
    live=true; 
-   disp('Audio recorder');
 else
    input = handles.audio;
-   % input2=handles.audio2;
 end
 
 
-output = dsp.AudioPlayer('SampleRate', fs, 'QueueDuration', 0.5);
-%handles.axes1=gca;
-%handles.axes2=gca;
-% axes(handles.axes1);
-%     aentrada=axes(handles.axes1);
-%     asalida=axes(handles.axes2);
-%    aentrada=subplot(1,2,1);
-%    asalida=subplot(1,2,2);
+output = dsp.AudioPlayer('SampleRate', fs, 'QueueDuration', 1);
     if ~isempty(handles.respuesta)
-    handlrespuesta_al_impulso=wavread(handles.respuesta);
+        respuesta_al_impulso=wavread(handles.respuesta);
     end;
     tic;
-% if (index == 4 || index==6)
-%     switch index
-%         case 4 
-%             result=effect_wahwah(handles.audioraw);
-%         case 6
-%                      %audio2=wavread('Nice Drum Room');
-%          result=effect_cathedral_reverb(handles.audioraw2);
-%     end
-%     sound(result)
-%     plot(aentrada,handles.audioraw);
-%     plot(asalida,result); 
-% else
 ciclo = 1;
-% size=8000;
- while (live && toc < 15) || ( ~live && ~isDone(input))
+enda=false;
+ while ( (live && toc < 8) || ( ~live && ~isDone(input)) ) && ~enda
      %data=[floor(toc/ciclo), mod(toc, ciclo)];
-     % disp(data);
         audio = step(input);
-
  switch index
      case 1
          result=effect_tremolo(audio);
@@ -163,27 +141,26 @@ ciclo = 1;
          result=effect_distortion(audio);
      case 4
          result=effect_wahwah(audio);
-        % sound(result)
-         %plot(aentrada,handles.audioraw);
-         %plot(asalida,result); 
      case 5
          result=effect_overdrive(audio);
      case 6
-         %audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(audio,respuesta_al_impulso);
+        result=effect_cathedral_reverb(audio,respuesta_al_impulso);
      case 7
          result=effect_vibrato(audio);
  end
-
-        plot(handles.axes1,audio);
-
-   
-    plot(handles.axes2,result);    
-    drawnow;
-     step(output, result);
+    
+    %plot(handles.axes1,audio);
+    %plot(handles.axes2,result);    
+    %drawnow;
+    [size(audio);size(result)]
+    %[audio, result]
+    
+    step(output, result);
+    enda=true;
  end
  release(output);
  release(input);
+ disp('End of effect');
 % end 
     % drawnow;
 % AR = dsp.AudioRecorder('OutputNumOverrunSamples',true, 'SampleRate', 44100, 'SamplesPerFrame', 1024);
