@@ -86,6 +86,7 @@ handles.audio2=[];
 handles.audio=[];
 handles.audioraw=[];
 handles.audioraw2=[];
+handles.respuesta=[];
 handles.grabarinterno = audiorecorder(fs,16,1);
 % handles.grabarinternotarjeta2 = audiorecorder(fs,16,2,2);
 % handles.grabarinternotarjeta = audiorecorder(fs,16,1,2);
@@ -110,11 +111,11 @@ fsi=fs;
 if isempty(handles.audio)
     if (index==6)
         cha=2;
-        fsi=fs/2;
+        fsi=2*fs;
     end
-   input = dsp.AudioRecorder('OutputNumUnderrunSamples', true,'NumChannels', cha,'QueueDuration',0.5, 'SamplesPerFrame', fsi, 'SampleRate', fs);
+   input = dsp.AudioRecorder('OutputNumUnderrunSamples', 'true','NumChannels', cha,'QueueDuration',0.5, 'SamplesPerFrame', fsi, 'SampleRate', fs);
    %input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
-   live=true;
+   live=true; 
    disp('Audio recorder');
 else
    input = handles.audio;
@@ -130,6 +131,9 @@ output = dsp.AudioPlayer('SampleRate', fs, 'QueueDuration', 0.5);
 %     asalida=axes(handles.axes2);
 %    aentrada=subplot(1,2,1);
 %    asalida=subplot(1,2,2);
+    if ~isempty(handles.respuesta)
+    handlrespuesta_al_impulso=wavread(handles.respuesta);
+    end;
     tic;
 % if (index == 4 || index==6)
 %     switch index
@@ -148,7 +152,6 @@ ciclo = 1;
  while (live && toc < 15) || ( ~live && ~isDone(input))
      %data=[floor(toc/ciclo), mod(toc, ciclo)];
      % disp(data);
-     disp('One');
         audio = step(input);
 
  switch index
@@ -167,7 +170,7 @@ ciclo = 1;
          result=effect_overdrive(audio);
      case 6
          %audio2=lib_audio('Nice Drum Room');
-         result=effect_cathedral_reverb(audio,handles.respuesta);
+         result=effect_cathedral_reverb(audio,respuesta_al_impulso);
      case 7
          result=effect_vibrato(audio);
  end
