@@ -1,6 +1,6 @@
 function varargout = Interface(varargin)
 global fs n audio nn;
-fs=10000;
+fs=8000;
 n=0.05;
 nn=100;
 
@@ -149,14 +149,14 @@ enda=false;
          result=effect_vibrato(audio);
  end
     
-    %plot(handles.axes1,audio);
-    %plot(handles.axes2,result);    
-    %drawnow;
-    [size(audio);size(result)]
+    plot(handles.axes1,audio);
+    plot(handles.axes2,result);    
+    drawnow;
+    %[size(audio);size(result)]
     %[audio, result]
     
     step(output, result);
-    enda=true;
+    % enda=true;
  end
  release(output);
  release(input);

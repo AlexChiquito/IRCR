@@ -12,4 +12,5 @@ reverb_signalt = reverb_signalt(1:1:out_L);
 reverb_signalt = reverb_signalt/max(abs(reverb_signalt)); %normalizar
 
 yrv=transpose(reverb_signalt);
-yrv=
+disp(size(yrv);
+yrv=resample(yrv, 8000,length(yrv));
