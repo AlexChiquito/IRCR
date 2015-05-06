@@ -1,6 +1,6 @@
 function varargout = Interface(varargin)
 global fs n audio nn;
-fs=8000;
+fs=44100;
 n=0.05;
 nn=100;
 
@@ -115,6 +115,7 @@ if isempty(handles.audio)
     end
     % 'OutputNumUnderrunSamples', true,
    input = dsp.AudioRecorder('NumChannels', cha,'QueueDuration', 1, 'SamplesPerFrame', fsi, 'SampleRate', fs);
+   %input.DeviceName = 'Micrófono (Fast Track) (Windows DirectSound)';
    %input2 = dsp.AudioRecorder('NumChannels', 2,'OutputNumOverrunSamples',true);
    live=true; 
 else
@@ -129,7 +130,7 @@ output = dsp.AudioPlayer('SampleRate', fs, 'QueueDuration', 1);
     tic;
 ciclo = 1;
 enda=false;
- while ( (live && toc < 8) || ( ~live && ~isDone(input)) ) && ~enda
+ while ( (live && toc < 27) || ( ~live && ~isDone(input)) ) && ~enda
      %data=[floor(toc/ciclo), mod(toc, ciclo)];
         audio = step(input);
  switch index
